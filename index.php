@@ -3,21 +3,26 @@ session_start();
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
+
+use Monolog\Level;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
 require_once('vendor/autoload.php');
 
 if(!empty($_POST["name"]) && !empty($_POST["email"]) && !empty($_POST["oms"])) {
     $mail = new PHPMailer(true);
     try {
         $mail->isSMTP();
-        $mail->Host       = 'codebygio.com';
+        $mail->Host       = 'alexvanrooij.nl';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'info@codebygio.com';
-        $mail->Password   = 'x';
+        $mail->Username   = 'contact@alexvanrooij.nl';
+        $mail->Password   = '0409-DerpAlex!';
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        $mail->Port       = 465;
+        $mail->Port       = '465';
 
         $mail->addAddress($_POST["email"]);
-        $mail->setFrom('info@codebygio.com', 'Contact');
+        $mail->setFrom('Contact@alexvanrooij.nl', 'Contact');
         $mail->addCC('giovanni.pedro.2004@gmail.com');
 
         $mail->isHTML(true);
@@ -26,6 +31,11 @@ if(!empty($_POST["name"]) && !empty($_POST["email"]) && !empty($_POST["oms"])) {
         $mail->AltBody = 'temp';
 
         $mail->send();
+        
+        $log = new Logger('info');
+        $log->pushHandler(new StreamHandler('info.log', Level::Info));
+        $log->info("'NAAM: ".$_POST["name"] ."' 'EMAIL: ".$_POST["email"] ."' 'BERICHT: ".$_POST["oms"]."'");
+
         echo 'Message has been sent';
     } catch (Exception $e) {
         echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
@@ -34,8 +44,8 @@ if(!empty($_POST["name"]) && !empty($_POST["email"]) && !empty($_POST["oms"])) {
 ?>
 
 <form method="POST" action="">
-    <input type="text" name="name">
-    <input type="email" name="email">
-    <input type="text" name="oms">
-    <button type="submit">
+    <input type="text" name="name" placeholder="name">
+    <input type="email" name="email" placeholder="email">
+    <input type="text" name="oms" placeholder="message">
+    <button type="submit">verzenden</button>
 </form>
