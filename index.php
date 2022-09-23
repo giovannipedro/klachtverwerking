@@ -4,11 +4,10 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 use PHPMailer\PHPMailer\Exception;
 
-use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 
-require_once('vendor/autoload.php');
+require_once('./vendor/autoload.php');
 
 if(!empty($_POST["name"]) && !empty($_POST["email"]) && !empty($_POST["oms"])) {
     $mail = new PHPMailer(true);
@@ -33,7 +32,7 @@ if(!empty($_POST["name"]) && !empty($_POST["email"]) && !empty($_POST["oms"])) {
         $mail->send();
         
         $log = new Logger('info');
-        $log->pushHandler(new StreamHandler('info.log', Level::Info));
+        $log->pushHandler(new StreamHandler('info.log'));
         $log->info("'NAAM: ".$_POST["name"] ."' 'EMAIL: ".$_POST["email"] ."' 'BERICHT: ".$_POST["oms"]."'");
 
         echo 'Message has been sent';
